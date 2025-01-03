@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getUserProfile } from './services/api';
 
 const AuthContext = createContext();
 
@@ -8,16 +9,30 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // null indicates "
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Simulate checking authentication from localStorage or an API
-    const token = localStorage.getItem('token');
-    setIsAuthenticated(!!token); // Set true if token exists, false otherwise
+
+  useEffect( () => {
+    const fetchUserDetails = async () =>{
+      try{
+        const {data} = await getUserProfile();
+        console.log(data)
+        setUser(data)
+  
+      }catch(e){
+        console.log(e)
+        if(e.response.status === 401) {
+          navigate('/login')
+        }
+        setIsAuthenticated(false)
+      }
+    }
+    fetchUserDetails()
+    setIsAuthenticated(true)
   }, []);
 
   const login = (token) => {
     localStorage.setItem('token', token);
     setIsAuthenticated(true);
-    navigate('/'); // Redirect to home after login
+    navigate('/'); 
   };
 
   const logout = () => {

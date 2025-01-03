@@ -80,7 +80,7 @@ const styles = {
     margin: 0,
   },
   listWrapper:{
-    maxHeight:'350px',
+    maxHeight:'335px',
     overflowY: 'auto',
     padding: '8px'
   }

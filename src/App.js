@@ -1,6 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes,Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './AuthContext.js';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { AuthProvider,} from './AuthContext.js';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -43,8 +43,7 @@ const App = () => {
               </ProtectedRoute>
             }
           >
-                        <Route path="direct/:id" element={<Chat />} />
-                        <Route path="group/:id" element={<Chat />} />
+                        <Route path=":type/:id" element={<Chat />} />
           </Route>
 
           {/* 404 and Default Routes */}

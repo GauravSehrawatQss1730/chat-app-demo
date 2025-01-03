@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/api';
 import { useAuth } from '../AuthContext';
 
@@ -8,7 +7,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const { login ,setUser } = useAuth();
 
   const validateForm = () => {
@@ -27,8 +25,7 @@ const Login = () => {
     try {
       setLoading(true); // Start loader
       const { data } = await loginUser({ email, password });
-      localStorage.setItem('token', data.token);
-      login();
+      login(data.token);
       setUser(data.user)
       setLoading(false);
     } catch (error) {

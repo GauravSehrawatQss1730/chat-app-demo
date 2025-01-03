@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { registerUser } from '../services/api';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
 const Register = () => {
@@ -8,7 +7,6 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
   const {login,setUser} = useAuth()
 
   const validateForm = () => {
@@ -26,8 +24,8 @@ const Register = () => {
 
     try {
       const { data } = await registerUser({ username, email, password });
-      localStorage.setItem('token', data.token);
-      login();
+
+      login(data.token);
       setUser(data.user)
     } catch (error) {
       setError('Error registering user');
