@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const MessageArea = ({ messages, primaryUser }) => {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
-    <div style={styles.container}>
+    <div ref={containerRef} style={styles.container}>
       {messages.map((msg, index) => (
         <div
           key={index}
@@ -53,6 +60,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     gap: '5px',
+    height: '100%'
   },
   messageWrapper: {
     display: 'flex',

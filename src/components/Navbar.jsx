@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
 const Navbar = () => {
-  const { isAuthenticated, logout, user } = useAuth(); 
-  const [userData,setUserData] = useState(null)
-  useEffect(()=>{
+  const { isAuthenticated, logout, user } = useAuth();
+
+  const [userData, setUserData] = useState(null)
+
+  useEffect(() => {
     setUserData(user)
-  },[user])
+  }, [user])
 
   return (
     <nav style={styles.navbar}>
@@ -23,7 +25,7 @@ const Navbar = () => {
       {isAuthenticated && (
         <div style={styles.userSection}>
           <span style={styles.userName}>
-            {userData?.name}
+            {userData?.username}
           </span>
           <button onClick={logout} style={styles.logoutButton}>Logout</button>
         </div>
