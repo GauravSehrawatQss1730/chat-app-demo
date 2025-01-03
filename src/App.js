@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { AuthProvider,} from './AuthContext.js';
+import { AuthProvider } from './AuthContext.js';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -18,7 +18,7 @@ const App = () => {
         <Routes>
           {/* Public Routes */}
           <Route
-            path="/login"
+            path='/login'
             element={
               <PublicRoute>
                 <Login />
@@ -26,7 +26,7 @@ const App = () => {
             }
           />
           <Route
-            path="/register"
+            path='/register'
             element={
               <PublicRoute>
                 <Register />
@@ -36,19 +36,19 @@ const App = () => {
 
           {/* Protected Routes */}
           <Route
-            path="/"
+            path='/'
             element={
               <ProtectedRoute>
                 <Home />
               </ProtectedRoute>
             }
           >
-                        <Route path=":type/:id" element={<Chat />} />
+            <Route path=':type/:id' element={<Chat />} />
           </Route>
 
           {/* 404 and Default Routes */}
           <Route
-            path="*"
+            path='*'
             element={<NotFound />} // "Page Not Found" is shown for invalid routes
           />
         </Routes>
@@ -56,6 +56,5 @@ const App = () => {
     </Router>
   );
 };
-
 
 export default App;

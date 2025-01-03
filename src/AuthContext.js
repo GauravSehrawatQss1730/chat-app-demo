@@ -9,30 +9,32 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // null indicates "
   const navigate = useNavigate();
 
-
-  useEffect( () => {
-    const fetchUserDetails = async () =>{
-      try{
-        const {data} = await getUserProfile();
-        console.log(data)
-        setUser(data)
-  
-      }catch(e){
-        console.log(e)
-        if(e.response.status === 401) {
-          navigate('/login')
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const { data } = await getUserProfile();
+        setUser(data);
+      } catch (e) {
+        console.log(e);
+        if (e.response.status === 401) {
+          navigate('/login');
         }
-        setIsAuthenticated(false)
+        setIsAuthenticated(false);
       }
+    };
+    if (localStorage.getItem('token')?.length) {
+      fetchUserDetails();
+      setIsAuthenticated(true);
+    } else {
+      navigate('/login');
+      setIsAuthenticated(false);
     }
-    fetchUserDetails()
-    setIsAuthenticated(true)
   }, []);
 
   const login = (token) => {
     localStorage.setItem('token', token);
     setIsAuthenticated(true);
-    navigate('/'); 
+    navigate('/');
   };
 
   const logout = () => {
@@ -47,7 +49,9 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout,user, setUser }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, login, logout, user, setUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
