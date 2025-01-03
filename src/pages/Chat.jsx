@@ -42,18 +42,6 @@ const Chat = () => {
     };
   }, [type, id]);
 
-  useEffect(() => {
-    // Listen for new messages
-    socket.on('receiveMessage', (newMessage) => {
-      console.log("Receiveed new message: " + newMessage)
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-    });
-  
-    // Cleanup on component unmount
-    return () => {
-      socket.off('receiveMessage');
-    };
-  }, []);
 
 
   const handleSendMessage = (text) => {

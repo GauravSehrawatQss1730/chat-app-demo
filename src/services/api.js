@@ -17,3 +17,5 @@ export const registerUser = (userData) => API.post('users/register', userData);
 export const loginUser = (credentials) => API.post('users/login', credentials);
 export const getUserProfile = () => API.get('/users/profile');
 export const getAllMessages = (chatId) => API.get(`/messages/${chatId}`);
+export const getAllUsers = ()=>API.get(`/users/all`)
+export const isChatExist = (userId) => API.get(`/chats/chat-exists/${userId}`)

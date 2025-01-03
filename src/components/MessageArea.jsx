@@ -1,8 +1,6 @@
 import React from 'react';
 
 const MessageArea = ({ messages, primaryUser }) => {
-  console.log(messages);
-  console.log(primaryUser)
 
   return (
     <div style={styles.container}>
