@@ -12,8 +12,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const { data } = await getUserProfile();
-        setUser(data);
+        const data = await getUserProfile();
+        setUser(data?.data);
       } catch (e) {
         console.log(e);
         if (e.response.status === 401) {

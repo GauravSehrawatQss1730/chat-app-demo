@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { formattedDate } from '../utils/utils';
 
 const MessageArea = ({ messages, primaryUser }) => {
   const containerRef = useRef(null);
@@ -9,6 +10,9 @@ const MessageArea = ({ messages, primaryUser }) => {
     }
   }, [messages]);
 
+
+  
+  
   return (
     <div ref={containerRef} style={styles.container}>
       {messages.map((msg, index) => (
@@ -19,6 +23,7 @@ const MessageArea = ({ messages, primaryUser }) => {
             flexDirection: msg.sender._id === primaryUser._id ? 'row-reverse' : 'row', // Align based on sender
           }}
         >
+          <div>{formattedDate(msg.timestamp)}</div>
           {/* Avatar */}
           <div style={styles.avatarContainer}>
             <Avatar user={msg.sender} />

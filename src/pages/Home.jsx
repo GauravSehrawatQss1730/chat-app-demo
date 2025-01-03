@@ -8,7 +8,9 @@ const Home = () => {
   useEffect(()=>{
     const fetchAllUser = async () => {
       const allUsers = await getAllUsers();
-      setDirectChat(allUsers.data)
+      if(allUsers?.status === 200) {
+        setDirectChat(allUsers.data)
+      }
     }
     fetchAllUser()
   },[])
