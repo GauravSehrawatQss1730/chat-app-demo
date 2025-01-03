@@ -6,7 +6,6 @@ const Navbar = () => {
   const { isAuthenticated, logout, user } = useAuth(); 
   const [userData,setUserData] = useState(null)
   useEffect(()=>{
-    console.log(user)
     setUserData(user)
   },[user])
 

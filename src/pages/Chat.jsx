@@ -10,7 +10,7 @@ const Chat = () => {
   const { type, id } = useParams(); // Access URL parameters
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true); // Add loading state
-  const {user} = useAuth()
+  const { user } = useAuth()
 
   const fetchMessages = async () => {
     try {
@@ -32,7 +32,12 @@ const Chat = () => {
 
     // Listen for incoming messages
     socket.on('receiveMessage', (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
+      const { data, error } = message
+      if (error) {
+        alert(error)
+        return;
+      }
+      setMessages((prevMessages) => [...prevMessages, data]);
     });
 
     // Cleanup: Leave the room and remove listeners on component unmount
@@ -50,12 +55,11 @@ const Chat = () => {
       sender: user._id, // Assume `userId` is from logged-in user context
       text,
     };
-  
+
     // Emit the message to the backend
-    setMessages((prevMessages) => [...prevMessages, message]);
     socket.emit('sendMessage', message);
   };
-  
+
 
   if (loading) {
     return <div>Loading chat...</div>;
@@ -66,7 +70,7 @@ const Chat = () => {
       <h2>
         {type === 'direct' ? 'Direct Chat' : 'Group Chat'} with ID: {id}
       </h2>
-      <MessageArea messages={messages} primaryUser= {user}/>
+      <MessageArea messages={messages} primaryUser={user} />
       <MessageInput onSendMessage={handleSendMessage} />
     </div>
   );
