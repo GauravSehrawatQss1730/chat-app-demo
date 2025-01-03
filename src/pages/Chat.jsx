@@ -78,7 +78,7 @@ const Chat = () => {
       <h2>
         {type === 'direct' ? 'Direct Chat' : 'Group Chat'} with ID: {id}
       </h2>
-      <MessageArea messages={messages} />
+      <MessageArea messages={messages} primaryUser= {user}/>
       <MessageInput onSendMessage={handleSendMessage} />
     </div>
   );
