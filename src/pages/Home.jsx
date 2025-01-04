@@ -5,15 +5,19 @@ import './Home.css'
 import { getAllUsers } from '../services/api';
 const Home = () => {
 
-  useEffect(()=>{
+  useEffect(() => {
     const fetchAllUser = async () => {
-      const allUsers = await getAllUsers();
-      if(allUsers?.status === 200) {
-        setDirectChat(allUsers.data)
+      try {
+        const allUsers = await getAllUsers();
+        if (allUsers?.status === 200) {
+          setDirectChat(allUsers.data)
+        }
+      } catch (err) {
+        console.log(err)
       }
     }
     fetchAllUser()
-  },[])
+  }, [])
   const [directChat, setDirectChat] = useState([]);
   const [groupChat, setGroupChat] = useState([]);
 
@@ -22,10 +26,10 @@ const Home = () => {
       {/* Chat List Sidebar */}
       <div style={styles.chatList}>
         <div className='chats'>
-      <ChatList users={directChat} type="direct" />
+          <ChatList users={directChat} type="direct" />
         </div>
         <div className='chats'>
-        <ChatList users={groupChat} type="group" />
+          <ChatList users={groupChat} type="group" />
         </div>
       </div>
 
