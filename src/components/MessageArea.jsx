@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { formattedDate } from '../utils/utils';
+import Avatar from './Avatar';
 
 const MessageArea = ({ messages, primaryUser }) => {
   const containerRef = useRef(null);
@@ -24,12 +25,8 @@ const MessageArea = ({ messages, primaryUser }) => {
           }}
         >
           <div>{formattedDate(msg.timestamp)}</div>
-          {/* Avatar */}
-          <div style={styles.avatarContainer}>
-            <Avatar user={msg.sender} />
-          </div>
+          <Avatar user={msg.sender} />
 
-          {/* Message */}
           <div
             style={{
               ...styles.message,
@@ -40,18 +37,6 @@ const MessageArea = ({ messages, primaryUser }) => {
           </div>
         </div>
       ))}
-    </div>
-  );
-};
-
-// Avatar Component
-const Avatar = ({ user }) => {
-  // Extract the first letter of the sender's username
-  const initial = user?.username?.charAt(0).toUpperCase() || "?";
-
-  return (
-    <div style={styles.avatar}>
-      <span style={styles.avatarText}>{initial}</span>
     </div>
   );
 };

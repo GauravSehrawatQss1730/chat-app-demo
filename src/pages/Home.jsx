@@ -26,10 +26,10 @@ const Home = () => {
       {/* Chat List Sidebar */}
       <div style={styles.chatList}>
         <div className='chats'>
-          <ChatList users={directChat} type="direct" />
+          <ChatList users={directChat} type="direct" name={"Direct Chats"} />
         </div>
         <div className='chats'>
-          <ChatList users={groupChat} type="group" />
+          <ChatList users={groupChat} type="group" name={"Group Chats"} />
         </div>
       </div>
 

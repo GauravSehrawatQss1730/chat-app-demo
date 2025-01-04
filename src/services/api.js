@@ -13,9 +13,15 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
+// User Routes
+export const getAllUsers = ()=>API.get(`/users/all`)
 export const registerUser = (userData) => API.post('users/register', userData);
 export const loginUser = (credentials) => API.post('users/login', credentials);
 export const getUserProfile = () => API.get('/users/profile');
+
+// Message Routes
 export const getAllMessages = (chatId) => API.get(`/messages/${chatId}`);
-export const getAllUsers = ()=>API.get(`/users/all`)
+
+// Chat Routes
+export const getChatById = (chatId, chatType) => API.get(`/chats/${chatId}?type=${chatType}`)
 export const isChatExist = (userId) => API.get(`/chats/chat-exists/${userId}`)

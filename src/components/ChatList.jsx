@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { isChatExist } from "../services/api";
 
-const ChatList = ({ users, type }) => {
+const ChatList = ({ users, type , name}) => {
   const navigate = useNavigate();
   const [selectedChatId, setSelectedChatId] = useState(null); // State to track selected chat
 
@@ -14,7 +14,7 @@ const ChatList = ({ users, type }) => {
 
   return (
     <div style={styles.sidebar}>
-      <h3 style={styles.title}>{type}</h3>
+      <h3 style={styles.title}>{name}</h3>
       <div style={styles.listWrapper}>
         <ul style={styles.chatList}>
           {users.map((user) => (

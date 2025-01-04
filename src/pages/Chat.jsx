@@ -3,14 +3,16 @@ import { useParams } from 'react-router-dom';
 import MessageArea from '../components/MessageArea';
 import MessageInput from '../components/MessageInput';
 import socket from '../socket'; // Centralized socket configuration
-import { getAllMessages } from '../services/api';
+import { getAllMessages, getChatById } from '../services/api';
 import { useAuth } from '../AuthContext';
+import ChatHeader from '../components/ChatHeader';
 
 const Chat = () => {
   const { type, id } = useParams(); // Access URL parameters
+  const { user } = useAuth()
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true); // Add loading state
-  const { user } = useAuth()
+  const [chatDetails, setChatDetails] = useState({})
 
   const fetchMessages = async () => {
     try {
@@ -23,7 +25,31 @@ const Chat = () => {
       setLoading(false);
     }
   };
+
+  const fetchChatDetails = async () => {
+    try {
+      setChatDetails({
+        username: "Loading..."
+      })
+      if (!user) return;
+      const { data: chatResponse } = await getChatById(id, type)
+      if (type === 'direct') {
+        if (chatResponse?.user1?._id !== user?._id) {
+          setChatDetails(chatResponse?.user1)
+        } else {
+          setChatDetails(chatResponse?.user2)
+        }
+      }
+      // Need to add code for group by
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
+    fetchChatDetails();
     fetchMessages();
 
     // Join a specific room for the chat (optional for organizing messages)
@@ -45,7 +71,7 @@ const Chat = () => {
       socket.emit('leaveRoom', { roomId });
       socket.off('receiveMessage');
     };
-  }, [type, id]);
+  }, [type, id, user]);
 
 
 
@@ -67,9 +93,7 @@ const Chat = () => {
 
   return (
     <div style={styles.chatContainer}>
-      <h2>
-        {type === 'direct' ? 'Direct Chat' : 'Group Chat'} with ID: {id}
-      </h2>
+      <ChatHeader chatType={type} chatDetails={chatDetails} chatId={id} />
       <MessageArea messages={messages} primaryUser={user} />
       <MessageInput onSendMessage={handleSendMessage} />
     </div>
