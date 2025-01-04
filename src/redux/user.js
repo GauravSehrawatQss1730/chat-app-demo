@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   directUsers: [],
   activeChat : null,
+  loggedInUser:null
 };
 
 const userSlice = createSlice({
@@ -16,8 +17,11 @@ const userSlice = createSlice({
     setActiveChat: (state, action) => {
       state.activeChat = action.payload;
     },
+    setLoggedInUser: (state, action) => {
+        state.loggedInUser = action.payload;
+      },
   },
 });
 
-export const { setDirectUsers,setActiveChat } = userSlice.actions;
+export const { setDirectUsers,setActiveChat,setLoggedInUser } = userSlice.actions;
 export default userSlice.reducer;

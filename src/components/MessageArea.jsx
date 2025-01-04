@@ -64,7 +64,8 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     gap: '5px',
-    height: '100%'
+    height: '100%',
+    paddingLeft:'10px'
   },
   messageWrapper: {
     display: 'flex',
