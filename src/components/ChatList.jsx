@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { isChatExist } from "../services/api";
+import { setActiveChat } from "../redux/user";
+import { useDispatch, useSelector } from "react-redux";
 
 const ChatList = ({ users, type }) => {
   const navigate = useNavigate();
-  const [selectedChatId, setSelectedChatId] = useState(null); // State to track selected chat
+  const dispatch = useDispatch();
+  const activeChat = useSelector((state) => state.user.activeChat)
 
   const handleSelectChat = async (user) => {
     const { data } = await isChatExist(user._id);
-    setSelectedChatId(user._id);
-    navigate(`${data.directChatExists.type}/${data.directChatExists._id}`);
+    dispatch(setActiveChat(data.directChatExists._id)); // Set active chat in Redux
+    navigate(`${data.directChatExists.type}/${user._id}`);
   };
 
   return (
@@ -23,7 +26,7 @@ const ChatList = ({ users, type }) => {
               onClick={() => handleSelectChat(user)}
               style={{
                 ...styles.chatItem,
-                ...(user._id === selectedChatId ? styles.selectedChatItem : {}),
+                ...(user._id === activeChat ? styles.selectedChatItem : {}),
               }}
             >
               <h4 style={styles.chatName}>{user.username}</h4>

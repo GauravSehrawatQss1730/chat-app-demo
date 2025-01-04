@@ -23,7 +23,6 @@ const MessageArea = ({ messages, primaryUser }) => {
             flexDirection: msg.sender._id === primaryUser._id ? 'row-reverse' : 'row', // Align based on sender
           }}
         >
-          <div>{formattedDate(msg.timestamp)}</div>
           {/* Avatar */}
           <div style={styles.avatarContainer}>
             <Avatar user={msg.sender} />
@@ -35,9 +34,10 @@ const MessageArea = ({ messages, primaryUser }) => {
               ...styles.message,
               ...(msg.sender._id === primaryUser._id ? styles.senderMessage : styles.receiverMessage),
             }}
-          >
+            >
             {msg.text}
           </div>
+            <div style={{fontSize:'10px'}}>{formattedDate(msg.timestamp)}</div>
         </div>
       ))}
     </div>
@@ -61,7 +61,6 @@ const styles = {
   container: {
     flex: 1,
     overflowY: 'auto',
-    padding: '10px',
     display: 'flex',
     flexDirection: 'column',
     gap: '5px',
