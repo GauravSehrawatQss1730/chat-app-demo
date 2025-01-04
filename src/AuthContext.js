@@ -1,6 +1,8 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getUserProfile } from './services/api';
+import { setLoggedInUser } from './redux/user';
+import { useDispatch } from 'react-redux';
 
 const AuthContext = createContext();
 
@@ -8,12 +10,13 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null); // null indicates "loading"
   const [user, setUser] = useState(null); // null indicates "
   const navigate = useNavigate();
-
+  const dispatch = useDispatch()
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
         const data = await getUserProfile();
         setUser(data?.data);
+        dispatch(setLoggedInUser(data?.data))
       } catch (e) {
         console.log(e);
         if (e.response.status === 401) {

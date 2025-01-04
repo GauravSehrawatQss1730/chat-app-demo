@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
   const { isAuthenticated, logout, user } = useAuth();
 
   const [userData, setUserData] = useState(null)
-
+  const loggedInUser = useSelector(state => state.user.loggedInUser);
   useEffect(() => {
     setUserData(user)
   }, [user])
@@ -25,7 +26,7 @@ const Navbar = () => {
       {isAuthenticated && (
         <div style={styles.userSection}>
           <span style={styles.userName}>
-            {userData?.username}
+            {loggedInUser?.username}
           </span>
           <button onClick={logout} style={styles.logoutButton}>Logout</button>
         </div>

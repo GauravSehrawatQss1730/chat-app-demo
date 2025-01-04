@@ -3,22 +3,22 @@ import { Outlet } from 'react-router-dom';
 import ChatList from '../components/ChatList';
 import './Home.css'
 import { getAllUsers } from '../services/api';
+import { useDispatch, useSelector } from 'react-redux';
+import { setDirectUsers } from '../redux/user';
 const Home = () => {
-
+  const dispatch = useDispatch();
+  const directChat = useSelector((state) => state.user.directUsers);
   useEffect(() => {
     const fetchAllUser = async () => {
       try {
         const allUsers = await getAllUsers();
         if (allUsers?.status === 200) {
-          setDirectChat(allUsers.data)
+          dispatch(setDirectUsers(allUsers.data)); // Dispatch to set users in Redux
         }
-      } catch (err) {
-        console.log(err)
-      }
-    }
-    fetchAllUser()
-  }, [])
-  const [directChat, setDirectChat] = useState([]);
+      } catch (err) { }
+    };
+    fetchAllUser();
+  }, [dispatch]);
   const [groupChat, setGroupChat] = useState([]);
 
   return (
@@ -53,7 +53,7 @@ const styles = {
   },
   mainContent: {
     flex: 1,
-    padding: '10px',
+    // padding: '10px',
   },
 };
 

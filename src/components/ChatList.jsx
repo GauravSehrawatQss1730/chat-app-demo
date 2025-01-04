@@ -1,20 +1,32 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { isChatExist } from "../services/api";
+import { setActiveChat } from "../redux/user";
+import { useDispatch, useSelector } from "react-redux";
+import CreateGroupModal from "../comman/Modal";
 
-const ChatList = ({ users, type , name}) => {
+const ChatList = ({ users, type, name }) => {
   const navigate = useNavigate();
-  const [selectedChatId, setSelectedChatId] = useState(null); // State to track selected chat
+  const dispatch = useDispatch();
+  const activeChat = useSelector((state) => state.user.activeChat)
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSelectChat = async (user) => {
     const { data } = await isChatExist(user._id);
-    setSelectedChatId(user._id);
-    navigate(`${data.directChatExists.type}/${data.directChatExists._id}`);
+    dispatch(setActiveChat(data.directChatExists._id));
+    navigate(`${data.directChatExists.type}/${user._id}`);
+  };
+  const handleCreateGroup = (groupData) => {
+    console.log('Group created:', groupData);
+    // Add logic to call API to create a new group
   };
 
   return (
     <div style={styles.sidebar}>
-      <h3 style={styles.title}>{name}</h3>
+      <div style={styles.title}>
+        {name}
+        {type === 'group' && <button onClick={() => setIsModalOpen(true)} style={styles.createButton}>Create</button>}
+      </div>
       <div style={styles.listWrapper}>
         <ul style={styles.chatList}>
           {users.map((user) => (
@@ -23,15 +35,19 @@ const ChatList = ({ users, type , name}) => {
               onClick={() => handleSelectChat(user)}
               style={{
                 ...styles.chatItem,
-                ...(user._id === selectedChatId ? styles.selectedChatItem : {}),
+                ...(user._id === activeChat ? styles.selectedChatItem : {}),
               }}
             >
               <h4 style={styles.chatName}>{user.username}</h4>
-              {/* <p style={styles.lastMessage}>{chat.lastMessage}</p> */}
             </li>
           ))}
         </ul>
       </div>
+      <CreateGroupModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onCreate={handleCreateGroup}
+      />
     </div>
   );
 };
@@ -41,15 +57,20 @@ const styles = {
     width: "300px",
     backgroundColor: "#f5f5f5",
     maxHeight: "100%",
-    borderRight: "1px solid #ddd",
     overflowY: "auto",
-    padding: "15px",
   },
   title: {
     fontSize: "18px",
     marginBottom: "15px",
-    color: "#333",
     fontWeight: "bold",
+    paddingLeft: '10px',
+    background: 'rgba(51, 51, 51)',
+    color: 'white',
+    borderTop: '1px solid rgb(136, 136, 136)',
+    padding: '10px',
+    textTransform: 'capitalize',
+    display: 'flex',
+    justifyContent: 'space-between'
   },
   chatList: {
     listStyleType: "none",
@@ -85,6 +106,16 @@ const styles = {
     maxHeight: "335px",
     overflowY: "auto",
     padding: "8px",
+  },
+  createButton: {
+    padding: '5px 10px',
+    backgroundColor: '#007bff',  // Blue color
+    color: 'white',              // White text
+    border: 'none',              // No border
+    borderRadius: '5px',         // Rounded corners
+    cursor: 'pointer',           // Pointer cursor on hover
+    fontSize: '14px',            // Font size
+    transition: 'background-color 0.3s', // Smooth hover effect
   },
 };
 

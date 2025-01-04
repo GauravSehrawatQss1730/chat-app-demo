@@ -9,7 +9,7 @@ const ChatHeader = ({ chatType, chatDetails, chatId }) => {
             gap: '10px'
         }}>
             <Avatar user={chatDetails} />
-            <h2>
+            <h2 style={{ fontSize: '2rem', paddingLeft: '10px' }}>
                 {chatType === 'direct' ? chatDetails?.username : `Group Chat with ID: ${chatId}`}
             </h2>
         </div>
