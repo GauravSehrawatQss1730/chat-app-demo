@@ -5,9 +5,12 @@ import './Home.css'
 import { getAllUsers } from '../services/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDirectUsers } from '../redux/user';
+import socket from '../socket';
 const Home = () => {
   const dispatch = useDispatch();
   const directChat = useSelector((state) => state.user.directUsers); 
+  const loggedInUser = useSelector(state => state.user.loggedInUser);
+  const [onlineUsers, setOnlineUsers] = useState([]);
   useEffect(() => {
     const fetchAllUser = async () => {
       const allUsers = await getAllUsers();
@@ -16,6 +19,15 @@ const Home = () => {
       }
     };
     fetchAllUser();
+    socket.emit('userOnline', loggedInUser?._id);
+    socket.on('onlineUsers', (users) => {
+      setOnlineUsers(users); // Update online users in state
+    });
+
+    // Clean up the socket connection on unmount
+    return () => {
+      socket.disconnect();
+    };
   }, [dispatch]);
   const [groupChat, setGroupChat] = useState([]);
 
@@ -24,10 +36,10 @@ const Home = () => {
       {/* Chat List Sidebar */}
       <div style={styles.chatList}>
         <div className='chats'>
-          <ChatList users={directChat} type="direct" />
+          <ChatList users={directChat} type="direct" onlineUsers={onlineUsers} />
         </div>
         <div className='chats'>
-          <ChatList users={groupChat} type="group" />
+          <ChatList users={groupChat} type="group" onlineUsers={onlineUsers} />
         </div>
       </div>
 
