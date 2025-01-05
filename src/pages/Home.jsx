@@ -21,8 +21,15 @@ const Home = () => {
       } catch (err) { }
     };
     fetchAllUser();
-    socket.emit('userOnline', loggedInUser?._id);
+    console.log("loggedInUser",loggedInUser)
+
+  }, [dispatch]);
+
+  useEffect(()=>{
+    if(!loggedInUser) return
+    socket.emit('userOnline', loggedInUser?._id);    
     socket.on('onlineUsers', (users) => {
+      console.log(users)
       setOnlineUsers(users); // Update online users in state
     });
 
@@ -30,7 +37,7 @@ const Home = () => {
     return () => {
       socket.disconnect();
     };
-  }, [dispatch]);
+  },[loggedInUser])
   const [groupChat, setGroupChat] = useState([]);
 
   return (
