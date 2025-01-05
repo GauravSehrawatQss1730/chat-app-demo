@@ -2,27 +2,39 @@ import React, { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import ChatList from '../components/ChatList';
 import './Home.css'
-import { getAllUsers } from '../services/api';
+import { getAllUsers, getGroupChats } from '../services/api';
 import { useDispatch, useSelector } from 'react-redux';
-import { setDirectUsers } from '../redux/user';
+import { setDirectUsers, setGroupChats } from '../redux/user';
 import socket from '../socket';
+
 const Home = () => {
   const dispatch = useDispatch();
   const directChat = useSelector((state) => state.user.directUsers);
+  const groupChats = useSelector((state) => state.user.groupChats);
   const loggedInUser = useSelector(state => state.user.loggedInUser);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  useEffect(() => {
-    const fetchAllUser = async () => {
-      try {
-        const allUsers = await getAllUsers();
-        if (allUsers?.status === 200) {
-          dispatch(setDirectUsers(allUsers.data)); // Dispatch to set users in Redux
-        }
-      } catch (err) { }
-    };
-    fetchAllUser();
-    console.log("loggedInUser",loggedInUser)
 
+  const fetchAllUser = async () => {
+    try {
+      const allUsers = await getAllUsers();
+      if (allUsers?.status === 200) {
+        dispatch(setDirectUsers(allUsers.data)); // Dispatch to set users in Redux
+      }
+    } catch (err) { }
+  };
+  
+  const fetchGroupChats = async () => {
+    try {
+      const allUsers = await getGroupChats();
+      if (allUsers?.status === 200) {
+        dispatch(setGroupChats(allUsers.data)); // Dispatch to set users in Redux
+      }
+    } catch (err) { }
+  }
+
+  useEffect(() => {
+    fetchAllUser();
+    fetchGroupChats();
   }, [dispatch]);
 
   useEffect(()=>{
@@ -38,7 +50,6 @@ const Home = () => {
       socket.disconnect();
     };
   },[loggedInUser])
-  const [groupChat, setGroupChat] = useState([]);
 
   return (
     <div style={styles.homeContainer}>
@@ -48,7 +59,7 @@ const Home = () => {
           <ChatList users={directChat} type="direct" name={"Direct Chats"} onlineUsers={onlineUsers} />
         </div>
         <div className='chats'>
-          <ChatList users={groupChat} type="group" name={"Group Chats"} onlineUsers={onlineUsers} />
+          <ChatList users={groupChats} type="group" name={"Group Chats"} onlineUsers={onlineUsers} />
         </div>
       </div>
 

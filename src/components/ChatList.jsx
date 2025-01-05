@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { initiateChat, isChatExist } from "../services/api";
-import { setActiveChat } from "../redux/user";
+import { getGroupChats, initiateChat, isChatExist } from "../services/api";
+import { setActiveChat, setGroupChats } from "../redux/user";
 import { useDispatch, useSelector } from "react-redux";
 import CreateGroupModal from "../comman/Modal";
 
-const ChatList = ({ users, type,onlineUsers, name }) => {
+const ChatList = ({ users, type, onlineUsers, name }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const activeChat = useSelector((state) => state.user.activeChat)
@@ -14,13 +14,19 @@ const ChatList = ({ users, type,onlineUsers, name }) => {
   const handleSelectChat = async (user) => {
     const { data } = await isChatExist(user._id);
     dispatch(setActiveChat(data.directChatExists._id));
-    navigate(`${data.directChatExists.type}/${data.directChatExists._id}`);
+    navigate(`${type}/${data.directChatExists._id}`);
   };
+
   const handleCreateGroup = async (groupData) => {
     try {
       console.log('Group created:', groupData);
       const data = await initiateChat(groupData)
       console.log(data)
+
+      const allUsers = await getGroupChats();
+      if (allUsers?.status === 200) {
+        dispatch(setGroupChats(allUsers.data)); // Dispatch to set users in Redux
+      }
     } catch (err) {
       console.log(err)
     }
@@ -43,8 +49,8 @@ const ChatList = ({ users, type,onlineUsers, name }) => {
                 ...(user._id === activeChat ? styles.selectedChatItem : {}),
               }}
             >
-              <h4 style={styles.chatName}>{user.username}
-              { type !=='group' && onlineUsers.includes(user._id) && (
+              <h4 style={styles.chatName}>{type === 'group' ? user?.name : user.username}
+                {type !== 'group' && onlineUsers.includes(user._id) && (
                   <span style={styles.onlineIndicator}></span> // Show indicator if user is online
                 )}
               </h4>

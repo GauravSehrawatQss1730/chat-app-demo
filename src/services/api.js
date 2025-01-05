@@ -38,3 +38,4 @@ export const getChatById = (chatId, chatType) =>
   API.get(`/chats/${chatId}?type=${chatType}`);
 export const isChatExist = (userId) => API.get(`/chats/chat-exists/${userId}`);
 export const initiateChat = (data) => API.post(`/chats/create`, data);
+export const getGroupChats = () => API.get('/chats/allChat');
