@@ -5,7 +5,7 @@ import { setActiveChat, setGroupChats } from "../redux/user";
 import { useDispatch, useSelector } from "react-redux";
 import CreateGroupModal from "../comman/Modal";
 
-const ChatList = ({ users, type, onlineUsers, name }) => {
+const ChatList = ({ users, type, onlineUsers, name, reloadData }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const activeChat = useSelector((state) => state.user.activeChat)
@@ -33,6 +33,7 @@ const ChatList = ({ users, type, onlineUsers, name }) => {
       if (type === 'direct') {
         const userId = groupData?.members[0];
         const { data } = await isDirectChatExists(userId, type);
+        await reloadData();
         dispatch(setActiveChat(data?.chat._id));
         navigate(`${type}/${data?.chat._id}`);
       }
@@ -41,10 +42,7 @@ const ChatList = ({ users, type, onlineUsers, name }) => {
 
         if (data?.status !== 201) return;
 
-        const allUsers = await getGroupChats();
-        if (allUsers?.status === 200) {
-          dispatch(setGroupChats(allUsers.data?.data)); // Dispatch to set users in Redux
-        }
+        await reloadData();
 
         navigate(`${type}/${data?.data?._id}`)
         dispatch(setActiveChat(data?.data._id));

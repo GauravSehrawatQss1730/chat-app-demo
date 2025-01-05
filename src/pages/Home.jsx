@@ -55,10 +55,10 @@ const Home = () => {
       {/* Chat List Sidebar */}
       <div style={styles.chatList}>
         <div className='chats'>
-          <ChatList users={directChat} type="direct" name={"Direct Chats"} onlineUsers={onlineUsers} />
+          <ChatList reloadData={fetchAllUser} users={directChat} type="direct" name={"Direct Chats"} onlineUsers={onlineUsers} />
         </div>
         <div className='chats'>
-          <ChatList users={groupChats} type="group" name={"Group Chats"} onlineUsers={onlineUsers} />
+          <ChatList reloadData={fetchGroupChats} users={groupChats} type="group" name={"Group Chats"} onlineUsers={onlineUsers} />
         </div>
       </div>
 
