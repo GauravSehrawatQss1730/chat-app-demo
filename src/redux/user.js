@@ -23,7 +23,7 @@ const userSlice = createSlice({
     },
     setGroupChats: (state, action) => {
       state.groupChats = action.payload;
-    }
+    },
   },
 });
 

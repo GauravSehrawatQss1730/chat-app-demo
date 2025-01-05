@@ -6,8 +6,9 @@ import socket from '../socket'; // Centralized socket configuration
 import { getAllMessages, getChatById } from '../services/api';
 import { useAuth } from '../AuthContext';
 import ChatHeader from '../components/ChatHeader';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../comman/Loader';
+import { setActiveChat } from '../redux/user';
 
 const Chat = () => {
   const { type, id } = useParams(); // Access URL parameters
@@ -17,6 +18,7 @@ const Chat = () => {
   const [loading, setLoading] = useState(true); // Add loading state
   const [chatDetails, setChatDetails] = useState({})
   const allUsers = useSelector((state) => state.user.directUsers.find(user => user._id === id))
+  const dispatch = useDispatch()
 
   const fetchMessages = async () => {
     try {
@@ -59,6 +61,7 @@ const Chat = () => {
     fetchChatDetails();
     fetchMessages();
 
+    dispatch(setActiveChat(id));
     // Join a specific room for the chat (optional for organizing messages)
     const roomId = `${id}`;
     socket.emit('joinRoom', { roomId });
@@ -79,8 +82,6 @@ const Chat = () => {
       socket.off('receiveMessage');
     };
   }, [type, id, user]);
-
-
 
   const handleSendMessage = (text) => {
     const message = {

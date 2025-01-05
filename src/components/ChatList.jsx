@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getGroupChats, initiateChat, isDirectChatExists, isGroupChatExists } from "../services/api";
+import { getGroupChats, initiateGroupChat, isDirectChatExists, isGroupChatExists } from "../services/api";
 import { setActiveChat, setGroupChats } from "../redux/user";
 import { useDispatch, useSelector } from "react-redux";
 import CreateGroupModal from "../comman/Modal";
@@ -14,8 +14,8 @@ const ChatList = ({ users, type, onlineUsers, name }) => {
   const handleSelectChat = async (user) => {
     if (type === 'direct') {
       const { data } = await isDirectChatExists(user._id, type);
-      dispatch(setActiveChat(data.chat._id));
-      navigate(`${type}/${data.chat._id}`);
+      dispatch(setActiveChat(user._id));
+      navigate(`${type}/${user._id}`);
     }
     if (type === 'group') {
       try {
@@ -28,15 +28,26 @@ const ChatList = ({ users, type, onlineUsers, name }) => {
     }
   };
 
-  const handleCreateGroup = async (groupData) => {
+  const handleCreate = async (groupData) => {
     try {
-      console.log('Group created:', groupData);
-      const data = await initiateChat(groupData)
-      console.log(data)
+      if (type === 'direct') {
+        const userId = groupData?.members[0];
+        const { data } = await isDirectChatExists(userId, type);
+        dispatch(setActiveChat(data?.chat._id));
+        navigate(`${type}/${data?.chat._id}`);
+      }
+      if (type === 'group') {
+        const data = await initiateGroupChat(groupData)
 
-      const allUsers = await getGroupChats();
-      if (allUsers?.status === 200) {
-        dispatch(setGroupChats(allUsers.data)); // Dispatch to set users in Redux
+        if (data?.status !== 201) return;
+
+        const allUsers = await getGroupChats();
+        if (allUsers?.status === 200) {
+          dispatch(setGroupChats(allUsers.data?.data)); // Dispatch to set users in Redux
+        }
+
+        navigate(`${type}/${data?.data?._id}`)
+        dispatch(setActiveChat(data?.data._id));
       }
     } catch (err) {
       console.log(err)
@@ -47,7 +58,7 @@ const ChatList = ({ users, type, onlineUsers, name }) => {
     <div style={styles.sidebar}>
       <div style={styles.title}>
         {name}
-        {type === 'group' && <button onClick={() => setIsModalOpen(true)} style={styles.createButton}>Create</button>}
+        <button onClick={() => setIsModalOpen(true)} style={styles.createButton}>{type === 'group' ? 'Create Group' : 'New Chat'}</button>
       </div>
       <div style={styles.listWrapper}>
         <ul style={styles.chatList}>
@@ -60,7 +71,7 @@ const ChatList = ({ users, type, onlineUsers, name }) => {
                 ...(user._id === activeChat ? styles.selectedChatItem : {}),
               }}
             >
-              <h4 style={styles.chatName}>{type === 'group' ? user?.name : user.username}
+              <h4 style={styles.chatName}>{user?.name}
                 {type !== 'group' && onlineUsers.includes(user._id) && (
                   <span style={styles.onlineIndicator}></span> // Show indicator if user is online
                 )}
@@ -72,7 +83,8 @@ const ChatList = ({ users, type, onlineUsers, name }) => {
       <CreateGroupModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onCreate={handleCreateGroup}
+        onCreate={handleCreate}
+        modalType={type}
       />
     </div>
   );

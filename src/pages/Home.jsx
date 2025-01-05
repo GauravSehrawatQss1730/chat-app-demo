@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import ChatList from '../components/ChatList';
 import './Home.css'
-import { getAllUsers, getGroupChats } from '../services/api';
+import { getDirectChat, getGroupChats } from '../services/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDirectUsers, setGroupChats } from '../redux/user';
 import socket from '../socket';
@@ -16,9 +16,9 @@ const Home = () => {
 
   const fetchAllUser = async () => {
     try {
-      const allUsers = await getAllUsers();
+      const allUsers = await getDirectChat();
       if (allUsers?.status === 200) {
-        dispatch(setDirectUsers(allUsers.data)); // Dispatch to set users in Redux
+        dispatch(setDirectUsers(allUsers.data?.data)); // Dispatch to set users in Redux
       }
     } catch (err) { }
   };
@@ -27,7 +27,7 @@ const Home = () => {
     try {
       const allUsers = await getGroupChats();
       if (allUsers?.status === 200) {
-        dispatch(setGroupChats(allUsers.data)); // Dispatch to set users in Redux
+        dispatch(setGroupChats(allUsers.data?.data)); // Dispatch to set users in Redux
       }
     } catch (err) { }
   }
@@ -41,7 +41,6 @@ const Home = () => {
     if(!loggedInUser) return
     socket.emit('userOnline', loggedInUser?._id);    
     socket.on('onlineUsers', (users) => {
-      console.log(users)
       setOnlineUsers(users); // Update online users in state
     });
 
