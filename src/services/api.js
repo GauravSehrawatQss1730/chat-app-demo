@@ -36,6 +36,7 @@ export const getAllMessages = (chatId) => API.get(`/messages/${chatId}`);
 // Chat Routes
 export const getChatById = (chatId, chatType) =>
   API.get(`/chats/${chatId}?type=${chatType}`);
-export const isChatExist = (userId) => API.get(`/chats/chat-exists/${userId}`);
+export const isDirectChatExists = (userId, chatType) => API.get(`/chats/direct-chat-exists/${userId}?type=${chatType}`);
+export const isGroupChatExists = (chatId, chatType) => API.get(`/chats/group-chat-exists/${chatId}?type=${chatType}`);
 export const initiateChat = (data) => API.post(`/chats/create`, data);
 export const getGroupChats = () => API.get('/chats/allChat');

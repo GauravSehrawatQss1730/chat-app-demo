@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getGroupChats, initiateChat, isChatExist } from "../services/api";
+import { getGroupChats, initiateChat, isDirectChatExists, isGroupChatExists } from "../services/api";
 import { setActiveChat, setGroupChats } from "../redux/user";
 import { useDispatch, useSelector } from "react-redux";
 import CreateGroupModal from "../comman/Modal";
@@ -12,9 +12,16 @@ const ChatList = ({ users, type, onlineUsers, name }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSelectChat = async (user) => {
-    const { data } = await isChatExist(user._id);
-    dispatch(setActiveChat(data.directChatExists._id));
-    navigate(`${type}/${data.directChatExists._id}`);
+    if(type === 'direct') {
+      const { data } = await isDirectChatExists(user._id, type);
+      dispatch(setActiveChat(data.chat._id));
+      navigate(`${type}/${data.chat._id}`);
+    }
+    if(type === 'group') {
+      const { data } = await isGroupChatExists(user._id, type);
+      dispatch(setActiveChat(data.data._id));
+      navigate(`${type}/${data.data._id}`);
+    }
   };
 
   const handleCreateGroup = async (groupData) => {

@@ -81,7 +81,7 @@ const Chat = () => {
 
   const handleSendMessage = (text) => {
     const message = {
-      chat: activeChat,
+      chat: id,
       sender: user._id, // Assume `userId` is from logged-in user context
       text,
     };
