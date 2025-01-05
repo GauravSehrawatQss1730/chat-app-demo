@@ -6,6 +6,7 @@ import socket from '../socket'; // Centralized socket configuration
 import { getAllMessages } from '../services/api';
 import { useAuth } from '../AuthContext';
 import { useSelector } from 'react-redux';
+import Loader from '../comman/Loader';
 
 const Chat = () => {
   const { type,id } = useParams(); // Access URL parameters
@@ -65,7 +66,7 @@ const Chat = () => {
 
 
   if (loading) {
-    return <div>Loading chat...</div>;
+    <Loader/>
   }
 
   return (
