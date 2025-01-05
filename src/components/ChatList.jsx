@@ -5,7 +5,7 @@ import { setActiveChat } from "../redux/user";
 import { useDispatch, useSelector } from "react-redux";
 import CreateGroupModal from "../comman/Modal";
 
-const ChatList = ({ users, type, name }) => {
+const ChatList = ({ users, type,onlineUsers, name }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const activeChat = useSelector((state) => state.user.activeChat)
@@ -43,7 +43,11 @@ const ChatList = ({ users, type, name }) => {
                 ...(user._id === activeChat ? styles.selectedChatItem : {}),
               }}
             >
-              <h4 style={styles.chatName}>{user.username}</h4>
+              <h4 style={styles.chatName}>{user.username}
+              { type !=='group' && onlineUsers.includes(user._id) && (
+                  <span style={styles.onlineIndicator}></span> // Show indicator if user is online
+                )}
+              </h4>
             </li>
           ))}
         </ul>
@@ -121,6 +125,14 @@ const styles = {
     cursor: 'pointer',           // Pointer cursor on hover
     fontSize: '14px',            // Font size
     transition: 'background-color 0.3s', // Smooth hover effect
+  },
+  onlineIndicator: {
+    display: 'inline-block',
+    width: '8px',
+    height: '8px',
+    borderRadius: '50%',
+    backgroundColor: 'green',
+    marginLeft: '5px',
   },
 };
 

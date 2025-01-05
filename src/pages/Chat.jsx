@@ -7,6 +7,7 @@ import { getAllMessages, getChatById } from '../services/api';
 import { useAuth } from '../AuthContext';
 import ChatHeader from '../components/ChatHeader';
 import { useSelector } from 'react-redux';
+import Loader from '../comman/Loader';
 
 const Chat = () => {
   const { type,id } = useParams(); // Access URL parameters
@@ -91,7 +92,7 @@ const Chat = () => {
 
 
   if (loading) {
-    return <div>Loading chat...</div>;
+    <Loader/>
   }
 
   return (

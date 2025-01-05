@@ -12,6 +12,17 @@ API.interceptors.request.use((req) => {
   }
   return req;
 });
+API.interceptors.response.use(
+  (response) => response, // Return response if successful
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Clear token and redirect to login
+      localStorage.removeItem('token');
+      window.location.href = '/login'; // Redirect to login page
+    }
+    return Promise.reject(error); // Forward error for further handling if needed
+  }
+);
 
 // User Routes
 export const getAllUsers = () => API.get(`/users/all`);
