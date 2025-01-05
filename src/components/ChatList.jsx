@@ -12,15 +12,19 @@ const ChatList = ({ users, type, onlineUsers, name }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSelectChat = async (user) => {
-    if(type === 'direct') {
+    if (type === 'direct') {
       const { data } = await isDirectChatExists(user._id, type);
       dispatch(setActiveChat(data.chat._id));
       navigate(`${type}/${data.chat._id}`);
     }
-    if(type === 'group') {
-      const { data } = await isGroupChatExists(user._id, type);
-      dispatch(setActiveChat(data.data._id));
-      navigate(`${type}/${data.data._id}`);
+    if (type === 'group') {
+      try {
+        const { data } = await isGroupChatExists(user._id, type);
+        dispatch(setActiveChat(data.data._id));
+        navigate(`${type}/${data.data._id}`);
+      } catch (error) {
+        console.log(error)
+      }
     }
   };
 
