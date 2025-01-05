@@ -10,13 +10,13 @@ import { useSelector } from 'react-redux';
 import Loader from '../comman/Loader';
 
 const Chat = () => {
-  const { type,id } = useParams(); // Access URL parameters
+  const { type, id } = useParams(); // Access URL parameters
   const { user } = useAuth()
   const activeChat = useSelector((state) => state.user.activeChat)
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true); // Add loading state
   const [chatDetails, setChatDetails] = useState({})
-  const allUsers = useSelector((state) => state.user.directUsers.find(user => user._id === id ))
+  const allUsers = useSelector((state) => state.user.directUsers.find(user => user._id === id))
 
   const fetchMessages = async () => {
     try {
@@ -43,6 +43,9 @@ const Chat = () => {
         } else {
           setChatDetails(chatResponse?.user2)
         }
+      }
+      if (type === 'group') {
+        setChatDetails(chatResponse)
       }
       // Need to add code for group by
     } catch (error) {
@@ -92,7 +95,7 @@ const Chat = () => {
 
 
   if (loading) {
-    <Loader/>
+    <Loader />
   }
 
   return (
@@ -111,7 +114,7 @@ const styles = {
     height: '100%',
     width: '100%',
   },
-  header:{
+  header: {
     background: 'rgba(51, 51, 51)',
     display: 'flex',
     height: '40px',

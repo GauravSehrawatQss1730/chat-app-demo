@@ -2,6 +2,7 @@ import React from 'react'
 import Avatar from './Avatar'
 
 const ChatHeader = ({ chatType, chatDetails, chatId }) => {
+
     return (
         <div style={{
             display: "flex",
@@ -11,7 +12,7 @@ const ChatHeader = ({ chatType, chatDetails, chatId }) => {
         }}>
             <Avatar user={chatDetails} />
             <h2 style={{ fontSize: '2rem' }}>
-                {chatType === 'direct' ? chatDetails?.username : `Group Chat with ID: ${chatId}`}
+                {chatType === 'direct' ? chatDetails?.username : chatDetails?.name}
             </h2>
         </div>
     )
