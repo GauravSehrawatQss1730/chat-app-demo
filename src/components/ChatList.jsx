@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { isChatExist } from "../services/api";
+import { initiateChat, isChatExist } from "../services/api";
 import { setActiveChat } from "../redux/user";
 import { useDispatch, useSelector } from "react-redux";
 import CreateGroupModal from "../comman/Modal";
@@ -14,11 +14,16 @@ const ChatList = ({ users, type, name }) => {
   const handleSelectChat = async (user) => {
     const { data } = await isChatExist(user._id);
     dispatch(setActiveChat(data.directChatExists._id));
-    navigate(`${data.directChatExists.type}/${user._id}`);
+    navigate(`${data.directChatExists.type}/${data.directChatExists._id}`);
   };
-  const handleCreateGroup = (groupData) => {
-    console.log('Group created:', groupData);
-    // Add logic to call API to create a new group
+  const handleCreateGroup = async (groupData) => {
+    try {
+      console.log('Group created:', groupData);
+      const data = await initiateChat(groupData)
+      console.log(data)
+    } catch (err) {
+      console.log(err)
+    }
   };
 
   return (

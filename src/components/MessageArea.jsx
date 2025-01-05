@@ -24,7 +24,6 @@ const MessageArea = ({ messages, primaryUser }) => {
             flexDirection: msg.sender._id === primaryUser._id ? 'row-reverse' : 'row', // Align based on sender
           }}
         >
-          <div>{formattedDate(msg.timestamp)}</div>
           <Avatar user={msg.sender} />
 
           <div

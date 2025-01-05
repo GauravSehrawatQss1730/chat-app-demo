@@ -20,7 +20,7 @@ const Chat = () => {
   const fetchMessages = async () => {
     try {
       setLoading(true);
-      const { data } = await getAllMessages(activeChat);
+      const { data } = await getAllMessages(id);
       setMessages(data);
     } catch (error) {
       console.error('Error fetching messages:', error);
@@ -56,7 +56,7 @@ const Chat = () => {
     fetchMessages();
 
     // Join a specific room for the chat (optional for organizing messages)
-    const roomId = `${activeChat}`;
+    const roomId = `${id}`;
     socket.emit('joinRoom', { roomId });
 
     // Listen for incoming messages

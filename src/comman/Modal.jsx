@@ -1,22 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllUsers } from '../services/api';
+import { setDirectUsers } from '../redux/user';
 
 const CreateGroupModal = ({ isOpen, onClose, onCreate }) => {
+  const dispatch = useDispatch();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState("");
+  const [users, setUsers] = useState([])
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const loggedInUser = useSelector(state => state.user.loggedInUser);
 
-  if (!isOpen) return null; // Do not render if modal is not open
+  const fetchAllUser = async () => {
+    try {
+      const allUsers = await getAllUsers();
+      if (allUsers?.status === 200) {
+        const tempData = allUsers.data?.filter((single) => single?._id !== loggedInUser?._id)
+        setUsers(tempData)
+        dispatch(setDirectUsers(allUsers.data));
+      }
+    } catch (err) { }
+  };
+
+  const handleUserSelection = (userId) => {
+    setSelectedUsers((prevSelected) =>
+      prevSelected.includes(userId)
+        ? prevSelected.filter((id) => id !== userId)
+        : [...prevSelected, userId]
+    );
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const groupData = {
       name,
       description,
-      tags: tags.split(",").map((tag) => tag.trim()), // Split and trim tags
+      tags: tags.split(",").map((tag) => tag.trim()),
+      members: selectedUsers,
+      type: "group"
     };
     onCreate(groupData);
-    onClose(); // Close modal after creating the group
+    onClose();
   };
+
+  useEffect(() => {
+    if (loggedInUser) {
+      fetchAllUser()
+    }
+  }, [loggedInUser])
+
+  if (!isOpen) return null; // Do not render if modal is not open
 
   return (
     <div style={styles.modalOverlay}>
@@ -40,6 +74,34 @@ const CreateGroupModal = ({ isOpen, onClose, onCreate }) => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
+          </div>
+          <div style={styles.wrapper}>
+            <label style={styles.label}>Tags</label>
+            <input
+              type="text"
+              style={styles.input}
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
+              placeholder="Enter tags, separated by commas"
+            />
+          </div>
+          <div style={styles.checkboxWrapper}>
+            <label style={styles.label}>Select Users</label>
+            <div style={styles.dropdown}>
+              {users.map((user) => (
+                <div key={user._id} style={styles.checkboxContainer}>
+                  <input
+                    type="checkbox"
+                    id={`user-${user._id}`}
+                    checked={selectedUsers.includes(user._id)}
+                    onChange={() => handleUserSelection(user._id)}
+                  />
+                  <label htmlFor={`user-${user.id}`} style={styles.checkboxLabel}>
+                    {user.username}
+                  </label>
+                </div>
+              ))}
+            </div>
           </div>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <button
@@ -97,7 +159,7 @@ const styles = {
     border: "1px solid #ddd",
     borderRadius: "5px",
     fontSize: "14px",
-    width:'60%'
+    width: "60%",
   },
   textarea: {
     padding: "10px",
@@ -106,7 +168,26 @@ const styles = {
     fontSize: "14px",
     resize: "vertical",
     minHeight: "80px",
-    width:'60%'
+    width: "60%",
+  },
+  dropdown: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+    border: "1px solid #ddd",
+    borderRadius: "5px",
+    padding: "10px",
+    maxHeight: "150px",
+    overflowY: "auto",
+    width: "60%",
+  },
+  checkboxContainer: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+  },
+  checkboxLabel: {
+    fontSize: "14px",
   },
   button: {
     padding: "10px 15px",
@@ -124,11 +205,16 @@ const styles = {
     color: "#fff",
     marginLeft: "10px",
   },
-  wrapper:{
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  }
+  wrapper: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  checkboxWrapper: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+  },
 };
 
 export default CreateGroupModal;
